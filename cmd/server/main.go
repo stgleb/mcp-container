@@ -9,7 +9,6 @@ import (
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 func main() {
@@ -39,9 +38,7 @@ func main() {
 
 		// Define a container request
 		req := testcontainers.ContainerRequest{
-			Image:        image,
-			ExposedPorts: []string{"80/tcp"}, // Adjust based on the container you want to run
-			WaitingFor:   wait.ForListeningPort("80/tcp"),
+			Image: image,
 		}
 
 		// Start the container
@@ -68,6 +65,16 @@ func main() {
 
 	// Start the server
 	log.Printf("Starting stdio server")
+	/*
+		Paste to stdio:
+
+		{"jsonrpc":"2.0","method":"tools/list","params":{},"id":1}
+
+		To call tool
+
+		{"jsonrpc":"2.0","method":"tools/call","params":{"name":"run_container","arguments":{"image":"hello-world"}},"id":2}
+
+	*/
 	if err := server.ServeStdio(s); err != nil {
 		log.Fatalf("Server error: %v\n", err)
 	}
